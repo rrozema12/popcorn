@@ -1,59 +1,106 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
-import Button from "@material-ui/core/Button";
+import Box from "@material-ui/core/Box";
+import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
+import CardActions from "@material-ui/core/CardActions";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Popover from "@material-ui/core/Popover";
+import IconButton from "@material-ui/core/IconButton";
 
-const useStyles = makeStyles({
-  root: {
-    maxWidth: 345,
-    height: 300
-  },
-  media: {
-    height: 140,
-  },
-});
+function truncate(str: string, n: number) {
+  if (str.length <= n) return str;
 
-const TARGET_PLATFORMS = ["Amazon Instant Video", "Netflix", "Hulu"];
+  const subString = str.substr(0, n - 1);
+  return (
+    <Tooltip title={str}>
+      <Box>{`${subString}...`}</Box>
+    </Tooltip>
+  );
+}
 
 export default function MediaCard(props: any) {
   const classes = useStyles();
+  const [locations, setLocations] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const getStreamsForTitle = async (id: string) => {
+    const options: any = {
+      method: "GET",
+      url:
+        "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/idlookup",
+      params: { source_id: id, source: "imdb", country: "us" },
+      headers: {
+        "x-rapidapi-key": "4842e2378bmsh83cda0f16148544p1fb134jsn5e514e7959e2",
+        "x-rapidapi-host":
+          "utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com",
+      },
+    };
+
+    const response: any = await axios.request(options);
+    setLocations(response.data.collection.locations);
+  };
+
+  const handleClick = async (event: any, id: string) => {
+    setAnchorEl(event.currentTarget);
+    await getStreamsForTitle(id);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setLocations([]);
+  };
 
   return (
-    <Card className={classes.root}>
-      <CardActionArea>
+    <Box>
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        transformOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Box p={2} display="flex" flexDirection="column">
+          {locations.map((loc: any) => (
+            <Box
+              mb={2}
+              style={{ cursor: "pointer" }}
+              onClick={() => window.open(loc.url, "_blank")}
+            >
+              <img src={loc.icon} alt="" />
+            </Box>
+          ))}
+        </Box>
+      </Popover>
+      <Card className={classes.root}>
         <CardMedia
           className={classes.media}
           image={props.picture}
-          title="Contemplative Reptile"
+          title={props.title}
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h3">
-            {props.title}
+          <Typography variant="h5" component="h5">
+            {truncate(props.title, 25)}
           </Typography>
         </CardContent>
-      </CardActionArea>
-      <CardActions>
-        {props.locations.map((location: any) => {
-          if (TARGET_PLATFORMS.includes(location.display_name)) {
-            return (
-              <Button
-                key={location.id}
-                size="small"
-                color="primary"
-                onClick={() => window.open(location.url, "_blank")}
-              >
-                <img src={location.icon} alt="" />
-              </Button>
-            );
-          }
-          return null;
-        })}
-      </CardActions>
-    </Card>
+        <CardActions>
+          <IconButton onClick={(e) => handleClick(e, props.IMDbId)}>
+            <i className="fa fa-tv" />
+          </IconButton>
+          <IconButton>
+            <i className="far fa-heart" />
+          </IconButton>
+        </CardActions>
+      </Card>
+    </Box>
   );
 }
+
+const useStyles = makeStyles({
+  root: { maxWidth: 345, height: "100%" },
+  media: { height: 200 },
+});
