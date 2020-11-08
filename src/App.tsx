@@ -6,7 +6,6 @@ import Sidebar from "./components/Sidebar";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import "./App.css";
-import ImageNotFound from "./img/image_not_found.png";
 
 const GIPHY_URLS: Array<string> = [
   "https://giphy.com/embed/12aW6JtfvUdcdO",
@@ -38,10 +37,12 @@ function App() {
       },
     };
     const result = await axios.request(options);
+
     setTimeout(() => {
       setStreams(result.data.d);
       setLoading(false);
     }, 1500);
+
     return result;
   };
 
@@ -83,7 +84,7 @@ function App() {
                 <MediaCard
                   IMDbId={stream.id}
                   title={stream.l}
-                  picture={(stream.i && stream.i.imageUrl) || ImageNotFound}
+                  picture={(stream.i && stream.i.imageUrl) || null}
                 />
               </Grid>
             );

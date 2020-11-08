@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import CardActions from "@material-ui/core/CardActions";
 import Popover from "@material-ui/core/Popover";
 import IconButton from "@material-ui/core/IconButton";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 function truncate(str: string, n: number) {
   if (str.length <= n) return str;
@@ -26,8 +27,10 @@ export default function MediaCard(props: any) {
   const classes = useStyles();
   const [locations, setLocations] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [searching, setSearching] = useState(false);
 
   const getStreamsForTitle = async (id: string) => {
+    setSearching(true);
     const options: any = {
       method: "GET",
       url:
@@ -41,6 +44,7 @@ export default function MediaCard(props: any) {
     };
 
     const response: any = await axios.request(options);
+    setSearching(false);
     setLocations(response.data.collection.locations);
   };
 
@@ -64,21 +68,25 @@ export default function MediaCard(props: any) {
         transformOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Box p={2} display="flex" flexDirection="column">
-          {locations.map((loc: any) => (
-            <Box
-              mb={2}
-              style={{ cursor: "pointer" }}
-              onClick={() => window.open(loc.url, "_blank")}
-            >
-              <img src={loc.icon} alt="" />
-            </Box>
-          ))}
+          {searching ? (
+            <CircularProgress />
+          ) : locations ? (
+            locations.map((loc: any) => (
+              <Box
+                mb={2}
+                style={{ cursor: "pointer" }}
+                onClick={() => window.open(loc.url, "_blank")}
+              >
+                <img src={loc.icon} alt="" />
+              </Box>
+            ))
+          ) : null}
         </Box>
       </Popover>
       <Card className={classes.root}>
         <CardMedia
           className={classes.media}
-          image={props.picture}
+          image={props.picture || "../img/image_not_found.png"}
           title={props.title}
         />
         <CardContent>
