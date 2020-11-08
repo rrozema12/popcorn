@@ -10,6 +10,7 @@ import {
   makeStyles,
 } from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
+import MenuIcon from "@material-ui/icons/Menu";
 
 export default function SearchAppBar(props: any) {
   const classes = useStyles();
@@ -29,8 +30,9 @@ export default function SearchAppBar(props: any) {
             className={classes.menuButton}
             color="inherit"
             aria-label="open drawer"
+            onClick={() => props.setOpen(true)}
           >
-            🍿
+            <MenuIcon />
           </IconButton>
 
           <div className={classes.search}>
