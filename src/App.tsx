@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
+
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
+
 import AppBar from "./components/AppBar";
 import MediaCard from "./components/MediaCard";
 import Sidebar from "./components/Sidebar";
-import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
-import "./App.css";
+import { IWatchList, IStream } from "./types/streams";
 
 const GIPHY_URLS: Array<string> = [
   "https://giphy.com/embed/12aW6JtfvUdcdO",
@@ -24,6 +26,7 @@ function App() {
   const [streams, setStreams] = useState([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = React.useState(false);
+  const [watchList, setWatchList] = useState<IWatchList[]>([]);
 
   const fetchIMDbData = async (title: string) => {
     setLoading(true);
@@ -46,14 +49,35 @@ function App() {
     return result;
   };
 
+  const toggleWatchListForTitle = (IMDbId: string, title: string) => {
+    if (
+      watchList.filter((item: IWatchList) => {
+        if (item.id === IMDbId) return item;
+        return null;
+      }).length === 0
+    ) {
+      return setWatchList([{ id: IMDbId, title: title }, ...watchList]);
+    }
+
+    const filteredWatchList = watchList.filter(
+      (item: IWatchList) => item.id !== IMDbId
+    );
+    return setWatchList([...filteredWatchList]);
+  };
+
   return (
-    <div className="App">
+    <div style={{ textAlign: "center" }}>
       <AppBar
         fetchIMDbData={fetchIMDbData}
         setStreams={setStreams}
         setOpen={setOpen}
       />
-      <Sidebar open={open} setOpen={setOpen} />
+      <Sidebar
+        open={open}
+        setOpen={setOpen}
+        watchList={watchList}
+        toggleWatchListForTitle={toggleWatchListForTitle}
+      />
       {loading ? (
         <Box mt={2}>
           <iframe
@@ -78,13 +102,15 @@ function App() {
             paddingLeft: "1rem",
           }}
         >
-          {streams.map((stream: any) => {
+          {streams.map((stream: IStream, index: number) => {
             return (
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid key={index} item xs={12} sm={6} md={3}>
                 <MediaCard
                   IMDbId={stream.id}
                   title={stream.l}
                   picture={(stream.i && stream.i.imageUrl) || null}
+                  toggleWatchListForTitle={toggleWatchListForTitle}
+                  watchList={watchList}
                 />
               </Grid>
             );
