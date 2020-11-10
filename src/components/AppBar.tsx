@@ -1,101 +1,61 @@
-import React from "react";
+import React, { useState } from "react";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
+import Box from "@material-ui/core/Box";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
-import MenuIcon from "@material-ui/icons/Menu";
-import {
-  createStyles,
-  fade,
-  Theme,
-  makeStyles,
-} from "@material-ui/core/styles";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
+import AppIcon from "../images/PopcornIcon.png";
+import { useStyles } from "../styles/AppSearchBar.styles";
+import { IconButton } from "@material-ui/core";
 
 export default function SearchAppBar(props: any) {
+  const [loading, setLoading] = useState<boolean>(false);
   const classes = useStyles();
 
-  const handleKeyDown = (event: any) => {
+  const handleKeyDown = async (event: any) => {
     if (event.key === "Enter") {
-      return props.fetchIMDbData(event.target.value);
+      setLoading(true);
+      const result = await props.fetchIMDbData(event.target.value);
+      setLoading(false);
+      return result;
     }
   };
 
   return (
-    <div className={classes.root}>
-      <AppBar position="static">
+    <Box className={classes.root}>
+      <AppBar elevation={1} position="fixed" style={{ background: "white" }}>
         <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-            onClick={() => props.setOpen(true)}
+          <Box
+            height="100%"
+            width="100%"
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
           >
-            <MenuIcon />
-          </IconButton>
-
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              onKeyPress={(e) => handleKeyDown(e)}
-              inputProps={{ "aria-label": "search" }}
-            />
-          </div>
+            <Box height="100%" width="100%" display="flex" alignItems="center">
+              <Box width="200px">
+                <img src={AppIcon} alt="" width="200px" />
+              </Box>
+            </Box>
+            <Box className={classes.search}>
+              <Box className={classes.searchIcon}>
+                {loading ? <CircularProgress size={24} /> : <SearchIcon />}
+              </Box>
+              <InputBase
+                placeholder="Search…"
+                classes={{ root: classes.inputRoot, input: classes.inputInput }}
+                onKeyPress={(e) => handleKeyDown(e)}
+                inputProps={{ "aria-label": "search" }}
+              />
+            </Box>
+            <IconButton>
+              <i style={{ color: "black" }} className="far fa-user-circle" />
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
-    </div>
+    </Box>
   );
 }
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: { flexGrow: 1 },
-    menuButton: { marginRight: theme.spacing(2) },
-    title: {
-      flexGrow: 1,
-      display: "none",
-      [theme.breakpoints.up("sm")]: { display: "block" },
-    },
-    search: {
-      position: "relative",
-      borderRadius: theme.shape.borderRadius,
-      backgroundColor: fade(theme.palette.common.white, 0.15),
-      "&:hover": { backgroundColor: fade(theme.palette.common.white, 0.25) },
-      marginLeft: 0,
-      width: "100%",
-      [theme.breakpoints.up("sm")]: {
-        marginLeft: theme.spacing(1),
-        width: "auto",
-      },
-    },
-    searchIcon: {
-      padding: theme.spacing(0, 2),
-      height: "100%",
-      position: "absolute",
-      pointerEvents: "none",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    inputRoot: { color: "inherit" },
-    inputInput: {
-      padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-      transition: theme.transitions.create("width"),
-      width: "100%",
-      [theme.breakpoints.up("sm")]: {
-        width: "12ch",
-        "&:focus": { width: "20ch" },
-      },
-    },
-  })
-);
