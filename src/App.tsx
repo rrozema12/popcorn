@@ -3,7 +3,6 @@ import axios from "axios";
 
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-
 import AppBar from "./components/AppBar";
 import MediaCard from "./components/MediaCard";
 import { IWatchList, IStream } from "./types/streams";
