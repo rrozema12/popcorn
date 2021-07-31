@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.js": "/popcorn/static/js/main.772d6936.chunk.js",
-    "main.js.map": "/popcorn/static/js/main.772d6936.chunk.js.map",
+    "main.js": "/popcorn/static/js/main.54606636.chunk.js",
+    "main.js.map": "/popcorn/static/js/main.54606636.chunk.js.map",
     "runtime-main.js": "/popcorn/static/js/runtime-main.b253db06.js",
     "runtime-main.js.map": "/popcorn/static/js/runtime-main.b253db06.js.map",
-    "static/js/2.dcea42b2.chunk.js": "/popcorn/static/js/2.dcea42b2.chunk.js",
-    "static/js/2.dcea42b2.chunk.js.map": "/popcorn/static/js/2.dcea42b2.chunk.js.map",
+    "static/js/2.9efece01.chunk.js": "/popcorn/static/js/2.9efece01.chunk.js",
+    "static/js/2.9efece01.chunk.js.map": "/popcorn/static/js/2.9efece01.chunk.js.map",
     "index.html": "/popcorn/index.html",
-    "static/js/2.dcea42b2.chunk.js.LICENSE.txt": "/popcorn/static/js/2.dcea42b2.chunk.js.LICENSE.txt",
+    "static/js/2.9efece01.chunk.js.LICENSE.txt": "/popcorn/static/js/2.9efece01.chunk.js.LICENSE.txt",
     "static/media/PopcornIcon.5d2ae7b8.png": "/popcorn/static/media/PopcornIcon.5d2ae7b8.png"
   },
   "entrypoints": [
     "static/js/runtime-main.b253db06.js",
-    "static/js/2.dcea42b2.chunk.js",
-    "static/js/main.772d6936.chunk.js"
+    "static/js/2.9efece01.chunk.js",
+    "static/js/main.54606636.chunk.js"
   ]
 }
