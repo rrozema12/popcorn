@@ -11,10 +11,10 @@ import CardActions from "@material-ui/core/CardActions";
 import Popover from "@material-ui/core/Popover";
 import IconButton from "@material-ui/core/IconButton";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
 import { useStyles } from "../styles/MediaCard.styles";
-import ImageNotFound from "../images/image_not_found.png";
-import { IWatchList } from "../types/streams";
+import {IMediaCard} from "../types/prop_types";
+// import ImageNotFound from "../images/image_not_found.png";
+// import { IWatchList } from "../types/streams";
 
 function truncate(str: string, n: number) {
   if (str.length <= n) return str;
@@ -27,7 +27,7 @@ function truncate(str: string, n: number) {
   );
 }
 
-export default function MediaCard(props: any) {
+export default function MediaCard(props: IMediaCard) {
   const classes = useStyles();
   const [locations, setLocations] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -74,7 +74,7 @@ export default function MediaCard(props: any) {
         <Box p={2} display="flex" flexDirection="column">
           {searching ? (
             <CircularProgress />
-          ) : locations ? (
+          ) : locations && locations.length > 0 ? (
             locations.map((loc: any) => (
               <Box
                 mb={2}
@@ -84,13 +84,16 @@ export default function MediaCard(props: any) {
                 <img src={loc.icon} alt="" />
               </Box>
             ))
-          ) : null}
+          ) : <Box fontFamily="Lato">
+            No Streams Found
+          </Box>
+          }
         </Box>
       </Popover>
       <Card className={classes.root}>
         <CardMedia
           className={classes.media}
-          image={props.picture || ImageNotFound}
+          image={props.picture || undefined}
           title={props.title}
         />
         <CardContent>
@@ -100,19 +103,19 @@ export default function MediaCard(props: any) {
           <IconButton onClick={(e) => handleClick(e, props.IMDbId)}>
             <i className="fa fa-tv" />
           </IconButton>
-          <IconButton
-            onClick={() =>
-              props.toggleWatchListForTitle(props.IMDbId, props.title)
-            }
-          >
-            {!!props.watchList.find(
-              (item: IWatchList) => item.id === props.IMDbId
-            ) ? (
-              <i className="fas fa-heart" style={{ color: "#E3242B" }} />
-            ) : (
-              <i className="far fa-heart" />
-            )}
-          </IconButton>
+          {/*<IconButton*/}
+          {/*  onClick={() =>*/}
+          {/*    props.toggleWatchListForTitle(props.IMDbId, props.title)*/}
+          {/*  }*/}
+          {/*>*/}
+            {/*{!!props.watchList.find(*/}
+            {/*  (item: IWatchList) => item.id === props.IMDbId*/}
+            {/*) ? (*/}
+            {/*  <i className="fas fa-heart" style={{ color: "#E3242B" }} />*/}
+            {/*) : (*/}
+            {/*  <i className="far fa-heart" />*/}
+            {/*)}*/}
+          {/*</IconButton>*/}
         </CardActions>
       </Card>
     </Box>

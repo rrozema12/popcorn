@@ -5,11 +5,10 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import AppBar from "./components/AppBar";
 import MediaCard from "./components/MediaCard";
-import { IWatchList, IStream } from "./types/streams";
+import { IStream } from "./types/streams";
 
 function App() {
   const [streams, setStreams] = useState<IStream[]>([]);
-  const [watchList, setWatchList] = useState<IWatchList[]>([]);
 
   const fetchIMDbData = async (title: string) => {
     const options: any = {
@@ -24,22 +23,6 @@ function App() {
     const result = await axios.request(options);
     setStreams(result.data.d);
     return result;
-  };
-
-  const toggleWatchListForTitle = (IMDbId: string, title: string) => {
-    if (
-      watchList.filter((item: IWatchList) => {
-        if (item.id === IMDbId) return item;
-        return null;
-      }).length === 0
-    ) {
-      return setWatchList([{ id: IMDbId, title: title }, ...watchList]);
-    }
-
-    const filteredWatchList = watchList.filter(
-      (item: IWatchList) => item.id !== IMDbId
-    );
-    return setWatchList([...filteredWatchList]);
   };
 
   return (
@@ -63,8 +46,6 @@ function App() {
                 IMDbId={stream.id}
                 title={stream.l}
                 picture={(stream.i && stream.i.imageUrl) || null}
-                toggleWatchListForTitle={toggleWatchListForTitle}
-                watchList={watchList}
               />
             </Grid>
           );
