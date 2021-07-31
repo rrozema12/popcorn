@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
-
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
@@ -13,13 +11,12 @@ import IconButton from "@material-ui/core/IconButton";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useStyles } from "../styles/MediaCard.styles";
 import { IMediaCard } from "../types/prop_types";
-// import ImageNotFound from "../images/image_not_found.png";
 import { IStreamLocation } from "../types/streams";
+import { getStreamsForTitle } from "../utils/api";
+import { truncate } from "../utils/helpers"
 
-function truncate(str: string, n: number) {
-  if (str.length <= n) return str;
-
-  const subString = str.substr(0, n - 1);
+function truncateBox(str: string, n: number) {
+ const subString = truncate(str, n)
   return (
     <Tooltip title={str}>
       <Box aria-label="title">{`${subString}...`}</Box>
@@ -33,28 +30,12 @@ export default function MediaCard(props: IMediaCard) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [searching, setSearching] = useState(false);
 
-  const getStreamsForTitle = async (id: string) => {
-    setSearching(true);
-    const options: any = {
-      method: "GET",
-      url:
-        "https://utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com/idlookup",
-      params: { source_id: id, source: "imdb", country: "us" },
-      headers: {
-        "x-rapidapi-key": "4842e2378bmsh83cda0f16148544p1fb134jsn5e514e7959e2",
-        "x-rapidapi-host":
-          "utelly-tv-shows-and-movies-availability-v1.p.rapidapi.com",
-      },
-    };
-
-    const response: any = await axios.request(options);
-    setSearching(false);
-    setLocations(response.data.collection.locations);
-  };
-
   const handleClick = async (event: any, id: string) => {
     setAnchorEl(event.currentTarget);
-    await getStreamsForTitle(id);
+    setSearching(true)
+    const loc: any = await getStreamsForTitle(id);
+    setLocations(loc.data.collection.locations);
+    setSearching(false)
   };
 
   const handleClose = () => {
@@ -98,7 +79,7 @@ export default function MediaCard(props: IMediaCard) {
           title={props.title}
         />
         <CardContent>
-          <Typography variant="h5">{truncate(props.title, 25)}</Typography>
+          <Typography variant="h5">{truncateBox(props.title, 25)}</Typography>
         </CardContent>
         <CardActions>
           <IconButton onClick={(e: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLButtonElement>) => handleClick(e, props.IMDbId)}>

@@ -1,33 +1,21 @@
+// Libraries
 import React, { useState } from "react";
-import axios from "axios";
-
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
+
+// Components
 import AppBar from "./components/AppBar";
 import MediaCard from "./components/MediaCard";
+
+// Interfaces & Types
 import { IStream } from "./types/streams";
 
 function App() {
   const [streams, setStreams] = useState<IStream[]>([]);
 
-  const fetchIMDbData = async (title: string) => {
-    const options: any = {
-      method: "GET",
-      url: "https://imdb8.p.rapidapi.com/title/auto-complete",
-      params: { q: title },
-      headers: {
-        "x-rapidapi-key": "4842e2378bmsh83cda0f16148544p1fb134jsn5e514e7959e2",
-        "x-rapidapi-host": "imdb8.p.rapidapi.com",
-      },
-    };
-    const result = await axios.request(options);
-    setStreams(result.data.d);
-    return result;
-  };
-
   return (
     <Box style={{ textAlign: "center" }}>
-      <AppBar fetchIMDbData={fetchIMDbData} setStreams={setStreams} />
+      <AppBar setStreams={setStreams} />
       <Grid
         container
         spacing={2}

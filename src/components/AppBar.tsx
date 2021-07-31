@@ -5,6 +5,8 @@ import Box from "@material-ui/core/Box";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
 import CircularProgress from "@material-ui/core/CircularProgress";
+// Helper Functions
+import { fetchIMDbData } from "../utils/api";
 
 import AppIcon from "../images/PopcornIcon.png";
 import { useStyles } from "../styles/AppSearchBar.styles";
@@ -17,7 +19,8 @@ export default function SearchAppBar(props: any) {
   const handleKeyDown = async (event: any) => {
     if (event.key === "Enter") {
       setLoading(true);
-      const result = await props.fetchIMDbData(event.target.value);
+      const result = await fetchIMDbData(event.target.value);
+      props.setStreams(result.data.d);
       setLoading(false);
       return result;
     }
