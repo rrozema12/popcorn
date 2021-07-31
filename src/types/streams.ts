@@ -18,3 +18,9 @@ interface IStreamImage {
   imageUrl: string;
   width: number;
 }
+
+
+export interface IStreamLocation {
+  icon: string;
+  url: string;
+}

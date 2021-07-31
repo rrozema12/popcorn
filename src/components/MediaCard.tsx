@@ -12,9 +12,9 @@ import Popover from "@material-ui/core/Popover";
 import IconButton from "@material-ui/core/IconButton";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useStyles } from "../styles/MediaCard.styles";
-import {IMediaCard} from "../types/prop_types";
+import { IMediaCard } from "../types/prop_types";
 // import ImageNotFound from "../images/image_not_found.png";
-// import { IWatchList } from "../types/streams";
+import { IStreamLocation } from "../types/streams";
 
 function truncate(str: string, n: number) {
   if (str.length <= n) return str;
@@ -75,8 +75,9 @@ export default function MediaCard(props: IMediaCard) {
           {searching ? (
             <CircularProgress />
           ) : locations && locations.length > 0 ? (
-            locations.map((loc: any) => (
+            locations.map((loc: IStreamLocation, index: number) => (
               <Box
+                key={index}
                 mb={2}
                 style={{ cursor: "pointer" }}
                 onClick={() => window.open(loc.url, "_blank")}
@@ -100,22 +101,9 @@ export default function MediaCard(props: IMediaCard) {
           <Typography variant="h5">{truncate(props.title, 25)}</Typography>
         </CardContent>
         <CardActions>
-          <IconButton onClick={(e) => handleClick(e, props.IMDbId)}>
+          <IconButton onClick={(e: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLButtonElement>) => handleClick(e, props.IMDbId)}>
             <i className="fa fa-tv" />
           </IconButton>
-          {/*<IconButton*/}
-          {/*  onClick={() =>*/}
-          {/*    props.toggleWatchListForTitle(props.IMDbId, props.title)*/}
-          {/*  }*/}
-          {/*>*/}
-            {/*{!!props.watchList.find(*/}
-            {/*  (item: IWatchList) => item.id === props.IMDbId*/}
-            {/*) ? (*/}
-            {/*  <i className="fas fa-heart" style={{ color: "#E3242B" }} />*/}
-            {/*) : (*/}
-            {/*  <i className="far fa-heart" />*/}
-            {/*)}*/}
-          {/*</IconButton>*/}
         </CardActions>
       </Card>
     </Box>
